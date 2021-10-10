@@ -197,6 +197,7 @@ contract TextBox is ERC721URIStorage {
   ];
 
   uint maxMints = 250;
+  uint totalNFTsMinted = 0;
 
   event NewEpicNFTMinted(address sender, uint256 tokenId);
 
@@ -240,7 +241,7 @@ contract TextBox is ERC721URIStorage {
   function makeAnEpicNFT() public {
     console.log('About to make an epic NFT!');
     uint256 newItemId = _tokenIds.current();
-    require(newItemId != maxMints - 1, "Sorry, max NFT's have been minted.");
+    require(totalNFTsMinted != maxMints, "Sorry, max NFT's have been minted.");
 
     // We go and randomly grab one word from each of the three arrays.
     string memory first = pickRandomFirstWord(newItemId);
@@ -287,12 +288,12 @@ contract TextBox is ERC721URIStorage {
   
     // Change NFT ID for next person
     _tokenIds.increment();
+    totalNFTsMinted++;
     console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
     emit NewEpicNFTMinted(msg.sender, newItemId);
   }
 
-  function getTotalNFTS() public view returns (uint) {
-    // _tokenIds counter starts at 0
-    return _tokenIds.current() + 1;
+  function getTotalNFTsMinted() public view returns (uint) {
+    return totalNFTsMinted;
   }
 }
